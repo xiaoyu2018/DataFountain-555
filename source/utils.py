@@ -1,7 +1,6 @@
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
-
 from config import DATA_DIR
 import json
 from PIL import Image
@@ -27,6 +26,14 @@ def name2idx(*names):
         return period[p]*3+weather[w],None
     return period[names[0]],weather[names[1]]
 
+def data_aug(X:torch.Tensor):
+    trans=transforms.Compose(
+        [
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomErasing()
+        ]
+    )
+    return trans(X)
 
 
 
@@ -55,13 +62,9 @@ class ImgDataset(Dataset):
             self.path+=r"\test"
             img_path=self.path+r"\test_images"
             self.data_info=listdir(img_path)
-            
-        
-        
+               
         else:
             raise Exception("没有该模式的数据集")
-
-
         
     def __len__(self):
         return len(self.data_info)
@@ -76,9 +79,6 @@ class ImgDataset(Dataset):
                 img=transforms.Resize(self.resize)(img)
             # 返回图片张量，图片名
             return transforms.ToTensor()(img),file_name
-
-
-
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
         p=self.data_info[index]["period"]
