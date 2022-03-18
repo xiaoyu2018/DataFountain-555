@@ -1,5 +1,5 @@
 # ------------路径设置------------
-BASE_DIR = r"D:\code\machine_learning\DataFountain-555"
+BASE_DIR = r"C:\Users\SXQ\Desktop\Ai_stu\lr"
 DATA_DIR=BASE_DIR+r"\dataset"
 
 

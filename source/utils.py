@@ -1,6 +1,8 @@
+from sklearn.utils import shuffle
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
+from torch.utils import data
 
 from config import DATA_DIR
 import json
@@ -26,9 +28,6 @@ def name2idx(*names):
         p,w=names[0].split(" ")
         return period[p]*3+weather[w],None
     return period[names[0]],weather[names[1]]
-
-
-
 
 class ImgDataset(Dataset):
     
@@ -56,13 +55,9 @@ class ImgDataset(Dataset):
             img_path=self.path+r"\test_images"
             self.data_info=listdir(img_path)
             
-        
-        
         else:
             raise Exception("没有该模式的数据集")
 
-
-        
     def __len__(self):
         return len(self.data_info)
 
@@ -76,9 +71,6 @@ class ImgDataset(Dataset):
                 img=transforms.Resize(self.resize)(img)
             # 返回图片张量，图片名
             return transforms.ToTensor()(img),file_name
-
-
-
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
         p=self.data_info[index]["period"]
@@ -97,9 +89,9 @@ class ImgDataset(Dataset):
                 if y2!=None else torch.LongTensor([y1])
 
 
-
-
-
+def load_data_12classes(batch_size=128, mode='train', merge=True):
+    dataset = ImgDataset(mode, merge=merge, resize=(960, 960))
+    return data.DataLoader(dataset, batch_size, shuffle = (mode == 'train'))
 
 
 if __name__=='__main__':
