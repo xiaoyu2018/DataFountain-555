@@ -6,10 +6,8 @@ import models
 import utils
 from tqdm import tqdm
 
-model_name=""
-net,model_name = models.get_resnet().to(torch.device('cuda:0'))
 
-def train(epochs, opt, loss, data_iter):
+def train(net, model_name, epochs, opt, loss, data_iter):
     import matplotlib.pyplot as plt
     from time import time
     net.train()
@@ -30,10 +28,6 @@ def train(epochs, opt, loss, data_iter):
     plt.show()
     torch.save(net.state_dict() ,model_name+str(time()))
 
-train(epochs=10, 
-      opt=torch.optim.Adam(net.parameters(), lr=0.03, weight_decay=0), 
-      loss=torch.nn.CrossEntropyLoss(),
-      data_iter = utils.load_data_12classes(batch_size=16, mode='val'))
 
 
 
