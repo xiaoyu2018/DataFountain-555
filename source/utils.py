@@ -93,8 +93,8 @@ class ImgDataset(Dataset):
             img=transforms.Resize(self.resize)(img)
         # 返回图片张量，标签
         return transforms.ToTensor()(img),\
-            (torch.LongTensor([y1]),torch.LongTensor([y2])) \
-                if y2!=None else torch.LongTensor([y1])
+            (torch.LongTensor([y1]).view(-1),torch.LongTensor([y2]).view(-1)) \
+                if y2!=None else torch.LongTensor([y1]).view(-1)
 
 
 
