@@ -1,4 +1,3 @@
-from sklearn.utils import shuffle
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
@@ -29,6 +28,17 @@ def name2idx(*names):
         return period[p]*3+weather[w],None
     return period[names[0]],weather[names[1]]
 
+def data_aug(X:torch.Tensor):
+    trans=transforms.Compose(
+        [
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomErasing()
+        ]
+    )
+    return trans(X)
+
+
+
 class ImgDataset(Dataset):
     
     def __init__(self,mode,merge=False,resize=None):
@@ -54,10 +64,10 @@ class ImgDataset(Dataset):
             self.path+=r"\test"
             img_path=self.path+r"\test_images"
             self.data_info=listdir(img_path)
-            
+               
         else:
             raise Exception("没有该模式的数据集")
-
+        
     def __len__(self):
         return len(self.data_info)
 
@@ -85,8 +95,8 @@ class ImgDataset(Dataset):
             img=transforms.Resize(self.resize)(img)
         # 返回图片张量，标签
         return transforms.ToTensor()(img),\
-            (torch.LongTensor([y1]),torch.LongTensor([y2])) \
-                if y2!=None else torch.LongTensor([y1])
+            (torch.LongTensor([y1]).view(-1),torch.LongTensor([y2]).view(-1)) \
+                if y2!=None else torch.LongTensor([y1]).view(-1)
 
 
 def load_data_12classes(batch_size=128, mode='train', merge=True):
