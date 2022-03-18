@@ -11,19 +11,20 @@ from os import path
 # 标签与索引转换
 # 支持合并转换和独立转换
 def idx2name(*ids):
-    period=["Dawn","Morning","Afternoon","Dusk","夜晚"]
-    weather=["Cloudy","Sunny","Rainy","Snowy","Foggy"]
+    period=["Dawn","Morning","Afternoon","Dusk"]
+    weather=["Cloudy","Sunny","Rainy"]
     
     if(len(ids)==1):
-        return "".join([period[ids[0]//5],weather[ids[0]%5]]),None
+        return " ".join([period[ids[0]//3],weather[ids[0]%3]]),None
 
     return period[ids[0]],weather[ids[1]]
 def name2idx(*names):
-    period={"Dawn":0,"Morning":1,"Afternoon":2,"黄昏":3,"夜晚":4}
-    weather={"Cloudy":0,"Sunny":1,"Rainy":2,"雪天":3,"雾天":4}
+    period={"Dawn":0,"Morning":1,"Afternoon":2,"Dusk":3}
+    weather={"Cloudy":0,"Sunny":1,"Rainy":2}
     
     if(len(names)==1):
-        return period[names[0][:2]]*5+weather[names[0][2:]],None
+        p,w=names[0].split(" ")
+        return period[p]*3+weather[w],None
     return period[names[0]],weather[names[1]]
 
 
@@ -31,8 +32,9 @@ def name2idx(*names):
 
 class ImgDataset(Dataset):
     
-    def __init__(self,mode):
+    def __init__(self,mode,merge=False):
         super().__init__()
+        self.merge=merge
         self.mode=mode
         self.path=""
         self.data_info=[] #用于保存训练集或验证集标注信息，或测试集图片路径
@@ -67,13 +69,17 @@ class ImgDataset(Dataset):
             return
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
-        y1,y2=name2idx(
-            self.data_info["period"],
-            self.data_info["weather"],
-            )
+        p=self.data_info[index]["period"]
+        w=self.data_info[index]["weather"]
+        
+        if(self.merge):
+            y1,y2=name2idx(p+" "+w)
+        else:
+            y1,y2=name2idx(p,w)
+        
         return transforms.ToTensor()(img),\
-            (torch.LongTensor(y1),torch.LongTensor(y2)) \
-                if y2 else torch.LongTensor(y1)
+            (torch.LongTensor([y1]),torch.LongTensor([y2])) \
+                if y2!=None else torch.LongTensor([y1])
 
 
 
@@ -82,7 +88,10 @@ class ImgDataset(Dataset):
 
 
 if __name__=='__main__':
-    print(ImgDataset("train").__getitem__(2))
+    print(ImgDataset("train",True).__getitem__(1))
+
+    
+    
 
     
     
