@@ -70,7 +70,11 @@ class ImgDataset(Dataset):
         if(self.mode=="test"):
             file_name=self.data_info[index]
             img=Image.open(path.join(self.path+r"\test_images",file_name))
+            # 返回图片张量，图片名
             return transforms.ToTensor()(img),file_name
+
+
+
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
         p=self.data_info[index]["period"]
@@ -81,6 +85,7 @@ class ImgDataset(Dataset):
         else:
             y1,y2=name2idx(p,w)
         
+        # 返回图片张量，标签
         return transforms.ToTensor()(img),\
             (torch.LongTensor([y1]),torch.LongTensor([y2])) \
                 if y2!=None else torch.LongTensor([y1])
