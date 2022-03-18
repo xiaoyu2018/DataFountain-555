@@ -1,14 +1,11 @@
 import models
 import utils
-import config
 from train  import train
 import test
-
 import torch 
-from torch import nn
 from torch.nn import functional as F
 import models
-from tqdm import tqdm
+
 
 net,model_name = models.get_resnet()
 net = net.to(torch.device('cuda:0'))

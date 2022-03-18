@@ -107,9 +107,5 @@ def load_data_12classes(batch_size=128, mode='train', merge=True):
 if __name__=='__main__':
     print(ImgDataset("test",resize=(720,720)).__getitem__(1)[0].shape)
     print(ImgDataset("train",merge=True).__getitem__(1)[0].shape)
-
-    
-    
-
     
     
