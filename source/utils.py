@@ -5,7 +5,7 @@ import torch
 from config import DATA_DIR
 import json
 from PIL import Image
-from os import path
+from os import path,listdir
 
 
 # 标签与索引转换
@@ -36,11 +36,11 @@ class ImgDataset(Dataset):
         super().__init__()
         self.merge=merge
         self.mode=mode
-        self.path=""
+        self.path=DATA_DIR
         self.data_info=[] #用于保存训练集或验证集标注信息，或测试集图片路径
 
         if(mode=="train" or mode=="val"):
-            self.path+=DATA_DIR+f"\{mode}"
+            self.path+=f"\{mode}"
             anno_path=self.path+r"\annotations.json"
             
 
@@ -52,7 +52,9 @@ class ImgDataset(Dataset):
 
         elif(mode=="test"):
             self.path+=r"\test"
-
+            img_path=self.path+r"\test_images"
+            self.data_info=listdir(img_path)
+            
         
         
         else:
@@ -66,7 +68,9 @@ class ImgDataset(Dataset):
     def __getitem__(self, index):
         
         if(self.mode=="test"):
-            return
+            file_name=self.data_info[index]
+            img=Image.open(path.join(self.path+r"\test_images",file_name))
+            return transforms.ToTensor()(img),file_name
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
         p=self.data_info[index]["period"]
@@ -88,7 +92,7 @@ class ImgDataset(Dataset):
 
 
 if __name__=='__main__':
-    print(ImgDataset("train",True).__getitem__(1))
+    print(ImgDataset("test").__getitem__(1))
 
     
     
