@@ -32,8 +32,9 @@ def name2idx(*names):
 
 class ImgDataset(Dataset):
     
-    def __init__(self,mode,merge=False):
+    def __init__(self,mode,merge=False,resize=None):
         super().__init__()
+        self.resize=resize
         self.merge=merge
         self.mode=mode
         self.path=DATA_DIR
@@ -70,6 +71,9 @@ class ImgDataset(Dataset):
         if(self.mode=="test"):
             file_name=self.data_info[index]
             img=Image.open(path.join(self.path+r"\test_images",file_name))
+            
+            if(self.resize):
+                img=transforms.Resize(self.resize)(img)
             # 返回图片张量，图片名
             return transforms.ToTensor()(img),file_name
 
@@ -84,7 +88,9 @@ class ImgDataset(Dataset):
             y1,y2=name2idx(p+" "+w)
         else:
             y1,y2=name2idx(p,w)
-        
+
+        if(self.resize):
+            img=transforms.Resize(self.resize)(img)
         # 返回图片张量，标签
         return transforms.ToTensor()(img),\
             (torch.LongTensor([y1]),torch.LongTensor([y2])) \
@@ -97,7 +103,8 @@ class ImgDataset(Dataset):
 
 
 if __name__=='__main__':
-    print(ImgDataset("test").__getitem__(1))
+    print(ImgDataset("test",resize=(720,720)).__getitem__(1)[0].shape)
+    print(ImgDataset("train",merge=True).__getitem__(1)[0].shape)
 
     
     
