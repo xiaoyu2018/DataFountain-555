@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from config import *
 
 def train(net, model_name, opt, loss, data_iter, epochs=EPOCHS):
-    from time import time
     net.train()
     train_loss = []
     
@@ -21,7 +20,9 @@ def train(net, model_name, opt, loss, data_iter, epochs=EPOCHS):
             opt.step()
         print(f"epoch:{epoch} loss:{t}")
         train_loss.append(t)
-        torch.save(net.state_dict() ,model_name+"_"+str(epoch))+".pt")
+        
+        torch.save((net.state_dict() ,model_name+"_"+str(epoch))+".pt")
+
 
     plt.plot(range(epochs), train_loss) 
     plt.show()
