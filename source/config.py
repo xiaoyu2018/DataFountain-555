@@ -5,7 +5,7 @@ import torch
 # ------------路径设置------------
 BASE_DIR = r"D:\code\machine_learning\DataFountain-555"
 DATA_DIR=BASE_DIR+r"\dataset"
-
+PARAMS_DIR=BASE_DIR+"/params"
 
 # ------------模型设置------------
 BATCH_SIZE=16

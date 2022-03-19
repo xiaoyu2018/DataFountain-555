@@ -21,7 +21,7 @@ def train(net, model_name, opt, loss, data_iter, epochs=EPOCHS):
         print(f"epoch:{epoch} loss:{t}")
         train_loss.append(t)
         
-        torch.save((net.state_dict() ,model_name+"_"+str(epoch))+".pt")
+        torch.save((net.state_dict() ,PARAMS_DIR+"/"+model_name+"_"+str(epoch))+".pt")
 
 
     plt.plot(range(epochs), train_loss) 

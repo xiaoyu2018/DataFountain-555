@@ -5,7 +5,7 @@ from test import gen_submission
 import torch 
 import models
 
-
+from config import *
 
 
 if __name__=='__main__':
@@ -27,4 +27,4 @@ if __name__=='__main__':
       #       loss=torch.nn.CrossEntropyLoss(),
       #       data_iter = utils.load_data(batch_size=12, mode='train'))
       
-      gen_submission(net,r"D:\code\machine_learning\DataFountain-555\source\res181647665821.281966")
+      gen_submission(net,PARAMS_DIR+"/res18_23.pt")
