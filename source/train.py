@@ -24,7 +24,7 @@ def train(net, model_name, opt, loss, data_iter, epochs=EPOCHS):
     
     plt.plot(range(epochs), train_loss) 
     plt.show()
-    torch.save(net.state_dict() ,model_name+"_"+str(time()))
+    torch.save(net.state_dict() ,model_name+"_"+str(int(time()))+".pt")
 
 
 
