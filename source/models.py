@@ -1,5 +1,7 @@
 from torch import nn
 from torch.nn import functional as F
+from config import *
+
 
 class Residual(nn.Module):
     def __init__(self, input_channels, output_channels, use_1x1conv=False, strides=1) -> None:
@@ -58,16 +60,47 @@ for layer in net:
     X = layer(X)
     print(layer.__class__.__name__,'output shape:\t', X.shape)        
 '''        
+
+# ------------------预训练模型------------------ 
+from torchvision import models
+
+class PretrainedModel():
+
+    def __init__(self,num_classes) -> None:
+        self.name=""
+        self.num_classes=num_classes
+    
+    def get_name(self):
+        return self.name
+
+    def _load_net(self):
+        pass
+    
+    def get_model(self):
+        net=self._load_net()
+        net.fc=nn.Linear(net.fc.in_features,self.num_classes)          
+        return net.to(DEVICE)
+
+class Res18(PretrainedModel):
+
+    def __init__(self,num_classes=12) -> None:
+        super(Res18,self).__init__(num_classes)
+        self.name="res18"
+    
+    def _load_net(self):
+        return models.resnet18(False)
+        
+class Res50(PretrainedModel):
+    def __init__(self,num_classes=12) -> None:
+        super(Res50,self).__init__(num_classes)
+        self.name="res50"
+        
+    def _load_net(self):
+        return models.resnet50(True)
         
         
-        
-        
-        
-        
-        
-        
-        
-        
+if __name__=='__main__':
+    print(Res18().get_model())
         
         
 

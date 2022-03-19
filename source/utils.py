@@ -2,7 +2,7 @@ from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
 from torch.utils import data
-
+from config import *
 from config import DATA_DIR
 import json
 from PIL import Image
@@ -95,12 +95,12 @@ class ImgDataset(Dataset):
             img=transforms.Resize(self.resize)(img)
         # 返回图片张量，标签
         return transforms.ToTensor()(img),\
-            (torch.LongTensor([y1]).view(-1),torch.LongTensor([y2]).view(-1)) \
-                if y2!=None else torch.LongTensor([y1]).view(-1)
+            (torch.LongTensor([y1]).squeeze(0),torch.LongTensor([y2]).squeeze(0)) \
+                if y2!=None else torch.LongTensor([y1]).squeeze(0)
 
 
-def load_data_12classes(batch_size=128, mode='train', merge=True):
-    dataset = ImgDataset(mode, merge=merge, resize=(960, 960))
+def load_data(batch_size=BATCH_SIZE, mode='train', merge=True):
+    dataset = ImgDataset(mode, merge=merge, resize=IMG_SIZE)
     return data.DataLoader(dataset, batch_size, shuffle = (mode == 'train'))
 
 
