@@ -19,7 +19,7 @@ if __name__=='__main__':
 
       # gen_submission(net)
 
-      res_18=models.Res18()
+      res_18=models.Res50()
       name,net=res_18.get_name(),res_18.get_model()
 
       # train(net, name, epochs=30, 
@@ -27,4 +27,4 @@ if __name__=='__main__':
       #       loss=torch.nn.CrossEntropyLoss(),
       #       data_iter = utils.load_data(batch_size=12, mode='train'))
       
-      gen_submission(net,PARAMS_DIR+"/res18_13.pt")
+      gen_submission(net,PARAMS_DIR+"/res50_3.pt")
