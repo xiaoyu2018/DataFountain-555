@@ -61,6 +61,45 @@ for layer in net:
     print(layer.__class__.__name__,'output shape:\t', X.shape)        
 '''        
 
+
+
+def define_net(name:str,pretrained=False):
+    from torchvision import models
+    from torch import nn
+    # ------------在此定义并返回所有网络------------
+    def _1():
+        net=models.resnet18(pretrained)
+        net.fc=nn.Linear(net.fc.in_features,12)
+        return net
+    def _2():
+        net=models.resnet34(pretrained)
+        net.fc=nn.Linear(net.fc.in_features,12)
+        return net
+    def _3():
+        net=models.mobilenet_v3_small(pretrained)
+        net.classifier[-1]=nn.Linear(net.classifier[-1].in_features,12)
+        return net
+    def _4():
+        net=models.mobilenet_v3_large(pretrained)
+        net.classifier[-1]=nn.Linear(net.classifier[-1].in_features,12)
+        return net
+    def _defalut():
+        raise Exception("未定义此类网络")
+
+    ###################################################
+    switch={
+        'resnet18':_1,
+        'resnet34':_2,
+        'mobilenet_v3_small':_3,
+        'mobilenet_v3_large':_4,
+    }
+
+    try:
+        return switch.get(name,_defalut)()
+    
+    except Exception as e:
+        print(e)
+
 # ------------------预训练模型------------------ 
 from torchvision import models
 

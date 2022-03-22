@@ -10,7 +10,7 @@ PARAMS_DIR=BASE_DIR+"/params"
 # ------------模型设置------------
 BATCH_SIZE=16
 EPOCHS=15
-IMG_SIZE=(960,960)
+IMG_SIZE=(900,900)
 DEVICE=torch.device("cuda:0")
 
 # x=[[0,1,2],[1,0,1]]

@@ -6,17 +6,18 @@ from config import *
 
 def inference_all(net,param_path,pretrained=True,merge=True):
     net.eval()
-    net=net.cuda()
+    net=net.to(DEVICE)
 
     if(param_path):
         net.load_state_dict(torch.load(param_path)) 
 
-    test_iter = load_data(batch_size=40, mode='test', merge=merge)
+    test_iter = load_data(batch_size=8, mode='test', merge=merge)
     predicts = []
     
     with torch.no_grad():
         for x in test_iter:
             x = x.to(torch.device(DEVICE))
+            x=transforms.Resize(IMG_SIZE)(x)
             if(pretrained):
                 x=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(x)
             out = net(x)
@@ -27,48 +28,33 @@ def inference_all(net,param_path,pretrained=True,merge=True):
     return predicts
 
 
-def define_voting_net(type:str):
-    from torchvision import models
-    switch={
-        'resnet18':_1,
-        'resnet34':_2,
-        'mobilenet_v3_small':_3,
-        'mobilenet_v3_large':_4,
-    }
+def get_voting_nets(models_path:str=BASE_DIR+r"\voting_models"):
+    """_summary_
 
-    try:
-        return switch.get(type,_defalut)()
+    Args:
+        models_path (str): 存储所有投票模型参数的文件夹路径
+    Returns:
+        返回(net,param_path) 组成的list
+    """
+    from models import define_net
+
+    types=listdir(models_path)
+    models_info=[]
     
-    except Exception as e:
-        print(e)
+    for type in types:
+        spec_net_dir=models_path+"\\"+type
+        params_path=listdir(spec_net_dir)
 
+        for p in params_path:
+            p=spec_net_dir+"\\"+p
+            models_info.append((define_net(type),p))
 
-    # ------------在此定义并返回所有网络------------
-    def _1():
-        net=models.resnet18()
-        net.fc=nn.Linear(net.fc.in_features,12)
-        return net
-    def _2():
-        net=models.resnet34()
-        net.fc=nn.Linear(net.fc.in_features,12)
-        return net
-    def _3():
-        net=models.mobilenet_v3_small(pretrained=True,progress=True)
-        net.classifier[-1]=nn.Linear(net.classifier[-1].in_features,12)
-    def _4():
-        net=models.mobilenet_v3_large()
-        net.classifier[-1]=nn.Linear(net.classifier[-1].in_features,12)
-        return net
-    
-    
-    def _defalut():
-        raise Exception("未定义此类网络")
-
+    return models_info
 def vote_to_inference_all(models_info:list,merge=True):
     """_summary_
 
     Args:
-        models_info (list): (netparam_path) 组成的list
+        models_info (list): (net,param_path) 组成的list
         merge (bool, optional): 是否合并时间与天气
 
     Returns:
@@ -82,8 +68,8 @@ def vote_to_inference_all(models_info:list,merge=True):
         print(predicts)
         scores_map[predicts]+=1
 
-    predicts=torch.argmax(scores_map,dim=1)
-    return predicts
+    res=torch.argmax(scores_map,dim=1)
+    return res
 
 
 def gen_submission(predicts, merge=True):
@@ -110,18 +96,27 @@ def gen_submission(predicts, merge=True):
 if __name__ == '__main__':
     from torchvision import models
     from torch import nn
+    from models import define_net
     
-    param=r"D:\code\machine_learning\DataFountain-555\params\mobilenet_v3_small_768_15.pt"
+    # param=r"D:\code\machine_learning\DataFountain-555\params\mobilenet_v3_small_768_15.pt"
     
-    net1=models.mobilenet_v3_small(pretrained=True,progress=True)
-    net1.classifier[-1]=nn.Linear(net1.classifier[-1].in_features,12)
-    net2=models.mobilenet_v3_small(pretrained=True,progress=True)
-    net2.classifier[-1]=nn.Linear(net2.classifier[-1].in_features,12)
+    # net1=models.mobilenet_v3_small(pretrained=True,progress=True)
+    # net1.classifier[-1]=nn.Linear(net1.classifier[-1].in_features,12)
+    # net2=models.mobilenet_v3_small(pretrained=True,progress=True)
+    # net2.classifier[-1]=nn.Linear(net2.classifier[-1].in_features,12)
     
-    info=[(net1,param),(net2,param)]
+    # info=[(net1,param),(net2,param)]
 
-    print(vote_to_inference_all(info))
+    # print(vote_to_inference_all(info))
     
     # predicts = inference_all(net,param)
 
     # gen_submission(predicts)
+
+    # print(define_voting_net('resnet18'))
+
+    models_info=get_voting_nets()
+    predicts=vote_to_inference_all(models_info)
+    # predicts=inference_all(define_net('resnet18'),r'D:\code\machine_learning\DataFountain-555\voting_models\resnet18\resnet_20.pt')
+    gen_submission(predicts)
+    
