@@ -97,7 +97,7 @@ class Res50(PretrainedModel):
         
     def _load_net(self):
         return models.resnet50(False)
-        
+  
         
 if __name__=='__main__':
     print(Res18().get_model())

@@ -80,7 +80,7 @@ class ImgDataset(Dataset):
             if(self.resize):
                 img=transforms.Resize(self.resize)(img)
             # 返回图片张量，图片名
-            return transforms.ToTensor()(img),file_name
+            return transforms.ToTensor()(img)
 
         img=Image.open(path.join(self.path,self.data_info[index]["filename"]))
         p=self.data_info[index]["period"]
