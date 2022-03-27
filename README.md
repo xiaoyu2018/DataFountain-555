@@ -38,8 +38,10 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-本仓库记录了DataFountain赛题 天气以及时间分类 的解决方案。截至2022年3月27日，测试成绩为0.94934795，第二赛段排行榜A榜排名第一。
-
+本仓库记录了DataFountain赛题 天气以及时间分类 的解决方案。截至2022年3月27日，测试成绩为0.94934795，第二赛段排行榜A榜排名第一。  
+<a href="https://www.datafountain.cn/competitions/555/ranking?isRedance=0&sch=1897">
+    <img src="./score.png">
+</a>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
