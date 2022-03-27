@@ -46,29 +46,29 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 1. 项目结构：  
-DataFountain-555  
---dataset（数据集）  
---params（模型参数）  
---source（源代码）  
-----main.py  
-----models.py  
-----train.py   
-----test.py   
-----config.py   
-----utils.py  
---voting_models（用于投票的模型）  
-----model_name1 （第一种模型）
-------1.pt  
-------2.pt  
-----model_name2 （第二种模型）
-------1.pt  
-------2.pt  
+    + DataFountain-555  
+    --dataset（数据集）  
+    --params（模型参数）  
+    --source（源代码）  
+    ----main.py  
+    ----models.py  
+    ----train.py   
+    ----test.py   
+    ----config.py   
+    ----utils.py  
+    --voting_models（用于投票的模型）  
+    ----model_name1 （第一种模型）  
+    ------1.pt  
+    ------2.pt  
+    ----model_name2 （第二种模型）  
+    ------1.pt  
+    ------2.pt  
 
 2. 其他说明：  
-+ 本项目将去除了训练集中未出现的三种类别，将剩余的`period`中["Dawn","Morning","Afternoon","Dusk"]与`weather`中["Cloudy","Sunny","Rainy"]合并为3x4=12类进行分类。
-+ 进行投票的模型只参与Inference过程，且具有相同权重。
-+ 所有经过预训练的模型均在ImageNet上完成预训练。
-+ 将参与投票的模型参数并按网络结构进行分类，放至voting_models不同文件夹下。然后于`models.py`中`define_net`建立映射关系。
+    + 本项目将去除了训练集中未出现的三种类别，将剩余的`period`中["Dawn","Morning","Afternoon","Dusk"]与`weather`中["Cloudy","Sunny","Rainy"]合并为3x4=12类进行分类。
+    + 进行投票的模型只参与Inference过程，且具有相同权重。
+    + 所有经过预训练的模型均在ImageNet上完成预训练。
+    + 将参与投票的模型参数并按网络结构进行分类，放至voting_models不同文件夹下。然后于`models.py`中`define_net`建立映射关系。
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
